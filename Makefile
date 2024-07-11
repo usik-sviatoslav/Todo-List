@@ -46,3 +46,28 @@ migrate:
 
 create-superuser: up
 	docker exec -it todo-list python manage.py createsuperuser
+
+
+# --- Code Linters -----------------------------------------------------------------------------------------------------
+.PHONY: lint flake8
+
+lint: flake8
+
+flake8:
+	@echo Starting flake8...
+	cd $(WORKDIR) && poetry run flake8 --toml-config=pyproject.toml .
+	@echo All done! ✨ 🍰 ✨
+
+
+# --- Code Formatters --------------------------------------------------------------------------------------------------
+.PHONY: reformat isort black
+
+reformat: isort black
+
+isort:
+	@echo Starting isort...
+	cd $(WORKDIR) && poetry run isort --settings=pyproject.toml .
+
+black:
+	@echo Starting black...
+	cd $(WORKDIR) && poetry run black --config=pyproject.toml .
