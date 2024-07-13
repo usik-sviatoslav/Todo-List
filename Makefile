@@ -14,7 +14,7 @@ COMPOSE_FILE = $(WORKDIR)/docker-compose.yml
 rebuild: down destroy build
 
 build:
-	docker build -t $(IMAGE) $(WORKDIR) --target $(MODE)
+	docker build --build-arg MODE=$(MODE) -t $(IMAGE) $(WORKDIR)
 
 destroy:
 	docker rmi -f $(IMAGE)
@@ -71,3 +71,15 @@ isort:
 black:
 	@echo Starting black...
 	cd $(WORKDIR) && poetry run black --config=pyproject.toml .
+
+
+# --- Pytest -----------------------------------------------------------------------------------------------------------
+.PHONY: pytest pytest-cov
+
+pytest:
+	@echo Starting pytest...
+	docker compose -f $(COMPOSE_FILE) run --rm todo-list pytest
+
+pytest-cov:
+	@echo Starting pytest with coverage...
+	docker compose -f $(COMPOSE_FILE) run --rm todo-list pytest --cov=. --cov-report=html
