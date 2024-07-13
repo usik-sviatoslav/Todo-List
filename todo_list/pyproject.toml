@@ -47,7 +47,7 @@ max-complexity = 8
 ignore = []
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "config.settings.dev"
+DJANGO_SETTINGS_MODULE = "core.settings.dev"
 python_files = ["tests.py", "test_*.py", "*_test.py"]
 addopts = ["-x", "--ff", "--nf", "--color=yes", "--reuse-db", "--nomigrations"]
 cache_dir = "/tmp/.pytest_cache"

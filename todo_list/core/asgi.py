@@ -1,5 +1,5 @@
 """
-ASGI config for config project.
+ASGI config for project core.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -16,6 +16,6 @@ load_dotenv()
 
 environment = os.getenv("MODE", "dev")
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", f"config.settings.{environment}")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", f"core.settings.{environment}")
 
 application = get_asgi_application()
