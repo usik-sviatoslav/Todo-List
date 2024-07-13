@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 CUSTOM_APPS = [
     "rest_framework",
+    "drf_spectacular",
     "apps.user",
     "apps.user_auth",
 ]
@@ -144,4 +145,28 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# DRF SPECTACULAR
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Todo List",
+    "DESCRIPTION": "API Todo List",
+    "VERSION": "1.0.0",
+    "SERVE_PERMISSIONS": [
+        "rest_framework.permissions.IsAdminUser",
+    ],
+    "SERVE_AUTHENTICATION": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "SWAGGER_UI_SETTINGS": {
+        "defaultModelsExpandDepth": -1,
+        "displayRequestDuration": True,
+        "filter": True,
+        "requestSnippetsEnabled": True,
+    },
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SORT_OPERATIONS": False,
+    "DISABLE_ERRORS_AND_WARNINGS": True,
+    "SERVE_INCLUDE_SCHEMA": False,
 }
