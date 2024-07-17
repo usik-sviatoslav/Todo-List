@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import os
+from datetime import timedelta
 
 from celery import Celery
 from django.conf import settings
@@ -17,4 +18,6 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 app.conf.broker_connection_retry_on_startup = True
 app.autodiscover_tasks()
 
-app.conf.beat_schedule = {}
+app.conf.beat_schedule = {
+    "clean_blacklist": {"task": "apps.user_auth.jwt_auth.tasks.clean_blacklist", "schedule": timedelta(days=1)},
+}
