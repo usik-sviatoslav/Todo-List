@@ -1,6 +1,6 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
-from rest_framework.serializers import CharField, ModelSerializer, ValidationError
+from rest_framework.serializers import CharField, ModelSerializer, Serializer, URLField, ValidationError
 
 from apps.user.models import User
 
@@ -28,3 +28,7 @@ class SignupSerializer(ModelSerializer):
         validated_data["password"] = make_password(validated_data["password"])
         validated_data["username"] = validated_data["email"].split("@")[0]
         return super().create(validated_data)
+
+
+class OAuth2RedirectSerializer(Serializer):
+    auth_url = URLField()

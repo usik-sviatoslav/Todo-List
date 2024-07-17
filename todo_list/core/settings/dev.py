@@ -11,3 +11,5 @@ INSTALLED_APPS += [  # noqa: F405
 MIDDLEWARE += [  # noqa: F405
     "silk.middleware.SilkyMiddleware",
 ]
+
+BASE_FRONTEND_URL = os.getenv("DEV_FRONTEND_URL")  # noqa: F405
