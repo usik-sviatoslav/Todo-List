@@ -18,6 +18,42 @@ services:
     ports:
       - ${POSTGRES_PORT}:5432
 
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - ${REDIS_PORT}:6379
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis-data:/data
+
+  celery-worker:
+    image: todo-list:latest
+    container_name: celery-worker
+    env_file: .env
+    restart: always
+    command: /bin/bash -c "celery -A core worker --loglevel=info"
+    depends_on:
+      todo-list:
+        condition: service_healthy
+
+  celery-beat:
+    image: todo-list:latest
+    container_name: celery-beat
+    env_file: .env
+    restart: always
+    command: /bin/bash -c "celery -A core beat --loglevel=info"
+    depends_on:
+      todo-list:
+        condition: service_healthy
+    volumes:
+      - celery-data:/app/celerybeat-schedule
+
   todo-list:
     image: todo-list:latest
     container_name: todo-list
@@ -27,6 +63,13 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "python", "manage.py", "check" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - ./:/code/
       - todo-list-logs:/var/log/backend
@@ -35,5 +78,7 @@ services:
 
 volumes:
   postgres-data: { }
+  redis-data: { }
+  celery-data: { }
   postgres-logs: { }
   todo-list-logs: { }

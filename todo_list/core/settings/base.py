@@ -33,6 +33,8 @@ ALLOWED_HOSTS = []
 CUSTOM_APPS = [
     "rest_framework",
     "drf_spectacular",
+    "django_celery_beat",
+    # --- Apps ----------
     "apps.user",
     "apps.user_auth",
 ]
@@ -145,6 +147,24 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
+
+# Redis
+# https://docs.djangoproject.com/en/5.0/topics/cache/#redis
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+# Configure sessions to use Redis
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
 
 # DRF SPECTACULAR
 SPECTACULAR_SETTINGS = {
