@@ -17,8 +17,22 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
+        "django_file": {
+            "level": "ERROR",
+            "class": "logging.TimedRotatingFileHandler",
+            "filename": "/var/log/todo-list/django_errors.log",
+            "when": "midnight",
+            "interval": 1,
+            "backupCount": 10,
+            "formatter": "verbose",
+        },
+        "celery_file": {
+            "level": "ERROR",
+            "class": "logging.FileHandler",
+            "filename": "/var/log/celery/celery_errors.log",
+            "when": "midnight",
+            "interval": 1,
+            "backupCount": 10,
             "formatter": "verbose",
         },
     },
@@ -29,10 +43,7 @@ LOGGING = {
         },
     },
     "loggers": {
-        "django": {
-            "handlers": ["file", "console"],
-            "level": "ERROR",
-            "propagate": True,
-        },
+        "django": {"handlers": ["django_file"], "level": "ERROR", "propagate": True},
+        "celery": {"handlers": ["celery_file"], "level": "ERROR", "propagate": True},
     },
 }

@@ -33,6 +33,9 @@ class GoogleOAuth2CallbackView(CreateAPIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         if user and user.is_active:
+            user.is_email_verified = True
+            user.save()
+
             token_pair = get_token_pair(user)
             serializer = self.get_serializer({"user": user, **token_pair})
             return Response(serializer.data)

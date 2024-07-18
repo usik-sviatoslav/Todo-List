@@ -13,8 +13,8 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - postgres-data:/var/lib/postgresql/data
-      - postgres-logs:/var/log/database
+      - postgres_data:/var/lib/postgresql/data
+      - logs:/var/log/postgresql
     ports:
       - ${POSTGRES_PORT}:5432
 
@@ -30,7 +30,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - redis-data:/data
+      - redis_data:/var/lib/redis/data
 
   celery-worker:
     image: todo-list:latest
@@ -41,6 +41,8 @@ services:
     depends_on:
       todo-list:
         condition: service_healthy
+    volumes:
+      - logs:/var/log/celery/worker
 
   celery-beat:
     image: todo-list:latest
@@ -52,7 +54,8 @@ services:
       todo-list:
         condition: service_healthy
     volumes:
-      - celery-data:/app/celerybeat-schedule
+      - celery_data:/var/lib/celery/data
+      - logs:/var/log/celery/beat
 
   todo-list:
     image: todo-list:latest
@@ -72,13 +75,12 @@ services:
       retries: 5
     volumes:
       - ./:/code/
-      - todo-list-logs:/var/log/backend
+      - logs:/var/log/todo-list
     ports:
       - ${DJANGO_PORT}:8000
 
 volumes:
-  postgres-data: { }
-  redis-data: { }
-  celery-data: { }
-  postgres-logs: { }
-  todo-list-logs: { }
+  postgres_data: { }
+  celery_data: { }
+  redis_data: { }
+  logs: { }
