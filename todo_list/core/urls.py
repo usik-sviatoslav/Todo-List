@@ -23,6 +23,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("core.docs")),
     path("api/auth/", include("apps.user_auth.urls")),
+    path("api/users/<int:user_id>/todo/", include("apps.todo.urls")),
 ]
 
 if settings.DEBUG:
