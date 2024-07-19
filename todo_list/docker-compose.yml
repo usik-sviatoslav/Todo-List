@@ -42,6 +42,7 @@ services:
       todo-list:
         condition: service_healthy
     volumes:
+      - ./:/code/
       - logs:/var/log/celery/worker
 
   celery-beat:
@@ -54,6 +55,7 @@ services:
       todo-list:
         condition: service_healthy
     volumes:
+      - ./:/code/
       - celery_data:/var/lib/celery/data
       - logs:/var/log/celery/beat
 

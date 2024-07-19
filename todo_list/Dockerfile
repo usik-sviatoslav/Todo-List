@@ -1,5 +1,5 @@
 # Builder stage
-FROM python:3.11-slim as builder
+FROM python:3.11-slim AS builder
 
 ENV PYTHONUNBUFFERED=1
 ENV POETRY_VIRTUALENVS_CREATE=false
@@ -21,7 +21,7 @@ RUN poetry install $(if [ "$MODE" = "prod" ]; then echo "--no-dev"; fi) \
 
 
 # Base stage
-FROM python:3.11-slim as base
+FROM python:3.11-slim AS base
 
 ENV PYTHONUNBUFFERED=1
 
