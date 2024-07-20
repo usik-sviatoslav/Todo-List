@@ -20,7 +20,8 @@ class TodoViewSet(ModelViewSet):
     model = Todo
 
     def get_queryset(self):
-        return self.model.objects.filter(user_id=self.kwargs.get("user_id"))
+        queryset = self.model.objects.order_by("due_date")
+        return queryset.filter(user_id=self.kwargs.get("user_id"))
 
     def get_object(self):
         return get_object_or_404(self.model, user_id=self.kwargs.get("user_id"), id=self.kwargs.get("pk"))

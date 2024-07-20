@@ -7,8 +7,7 @@ from django.utils import timezone
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 
 from apps.user.models import User
-
-from .models import EmailVerificationToken
+from apps.user_auth.models import EmailVerificationToken
 
 
 @shared_task
@@ -26,32 +25,25 @@ def clean_blacklist():
 
 @shared_task
 def send_verification_email(user_id: int):
-    try:
-        user = User.objects.get(id=user_id)
-        token, created = EmailVerificationToken.objects.get_or_create(user=user)
+    user = User.objects.get(id=user_id)
+    token = EmailVerificationToken.objects.create(user=user)
 
-        if token.is_expired():
-            token.delete()
-            token = EmailVerificationToken.objects.create(user=user)
-
-        verification_link = f"{settings.BASE_FRONTEND_URL}/verify/email/{token.token}/"
-        send_mail(
-            subject="Verify your email address",
-            message=f"Click the link to verify your email: {verification_link}",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
-        )
-    except User.DoesNotExist:  # type: ignore
-        pass
+    verification_link = f"{settings.BASE_FRONTEND_URL}/verify/email/{token.token}/"
+    send_mail(
+        subject="Verify your email address",
+        message=f"Click the link to verify your email: {verification_link}",
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+    )
 
 
 @shared_task
 def delete_expired_users():
     current_time = timezone.localtime(timezone.now())
-    expiration_date = current_time - timedelta(days=1)
-    tokens = EmailVerificationToken.objects.filter(created_at__lt=expiration_date)
+    expiration_date = current_time + timedelta(days=1)
 
-    for token in tokens:
-        user = token.user
-        if not user.is_email_verified:
-            user.delete()
+    expired_users = User.objects.filter(
+        emailverificationtoken__created_at__lt=expiration_date, is_email_verified=False
+    ).distinct()
+
+    expired_users.delete()
