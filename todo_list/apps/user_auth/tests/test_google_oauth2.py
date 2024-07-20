@@ -42,7 +42,7 @@ class TestGoogleOAuth2:
 
     # ----- RedirectView to Google OAuth2 ------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", google_oauth2_redirect_test_cases)
-    def test_redirect_view_to_google_oauth2(self, test_case: G_TestCase):
+    def test_redirect_view_to_google_oauth2(self, test_case: R_TestCase):
         client = self.get_testcase_client(test_case.auth_user)
         response = client.get(reverse("google-login"))
 
