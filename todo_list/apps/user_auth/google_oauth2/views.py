@@ -30,7 +30,7 @@ class GoogleOAuth2CallbackView(CreateAPIView):
         try:
             user = backend.complete()
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         if user and user.is_active:
             user.is_email_verified = True
@@ -40,4 +40,4 @@ class GoogleOAuth2CallbackView(CreateAPIView):
             serializer = self.get_serializer({"user": user, **token_pair})
             return Response(serializer.data)
 
-        return Response({"error": "Authentication failed"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "Authentication denied"}, status=status.HTTP_403_FORBIDDEN)

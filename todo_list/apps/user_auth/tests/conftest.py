@@ -23,4 +23,8 @@ def user_data():
             {"email": "user1@gmail.com", "password": password},
             {"email": "user1@gmail.com", "password": invalid_password},
         ),
+        "google_oauth2": DataType(
+            {"state": "valid_state", "code": "valid_code"},
+            {"state": "valid_state", "code": "invalid_code"},
+        ),
     }
